@@ -129,8 +129,22 @@
 
     /* ── RESPONSIVE ─── */
     @media (max-width: 700px) {
-      .bio-overlay { display: none; }
-      .bio-mobile  { display: block; }
+      /* Show the overlay on mobile too, positioned at the torn paper —
+         independent of the desktop layout, safe to adjust here */
+      .bio-overlay {
+        display: block;
+        left: 7%;
+        width: 86%;
+        padding: 3vw 4vw;
+        background: rgba(242, 236, 220, 0.88);
+        border-radius: 2px;
+      }
+      .bio-overlay .bio-text {
+        font-size: clamp(14px, 4vw, 18px);
+        line-height: 1.7;
+      }
+      /* Mobile fallback block no longer needed */
+      .bio-mobile { display: none; }
     }
     @media (max-width: 480px) {
       .contact-section { padding: 48px 20px 64px; }
@@ -274,13 +288,13 @@
       class="site-image"
     >
     <div class="bio-overlay" id="bio-overlay">
-      <p class="bio-text">Teresa is a ceramic artist whose practice moves between tenderness and the uncanny. Working with clay, she creates surreal, mythical beasts that feel both ancient and playful, offering an inversion of the Australian psyche where present times becomes dreamlike and otherworldly. Alongside these creatures, she builds a landscape of small homes perched on rounded hills, forms that hold a quiet balance between comfort and mystery. Her work invites viewers into intimate, imagined terrains where domesticity, myth, and panorama gently blur.</p>
+      <p class="bio-text">Teresa is a ceramic artist whose practice moves between tenderness and the uncanny. Working with clay, she creates surreal, mythical beasts that feel both ancient and playful, offering an inversion of the Australian psyche where present times become dreamlike and otherworldly. Alongside these creatures, she builds a landscape of small homes perched on rounded hills, forms that hold a quiet balance between comfort and mystery. Her work invites viewers into intimate, imagined terrains where domesticity, myth, and panorama gently blur.</p>
     </div>
   </div>
 
   <!-- Bio for mobile (below image) -->
   <div class="bio-mobile">
-    <p class="bio-text">Teresa is a ceramic artist whose practice moves between tenderness and the uncanny. Working with clay, she creates surreal, mythical beasts that feel both ancient and playful, offering an inversion of the Australian psyche where present times becomes dreamlike and otherworldly. Alongside these creatures, she builds a landscape of small homes perched on rounded hills, forms that hold a quiet balance between comfort and mystery. Her work invites viewers into intimate, imagined terrains where domesticity, myth, and panorama gently blur.</p>
+    <p class="bio-text">Teresa is a ceramic artist whose practice moves between tenderness and the uncanny. Working with clay, she creates surreal, mythical beasts that feel both ancient and playful, offering an inversion of the Australian psyche where present times become dreamlike and otherworldly. Alongside these creatures, she builds a landscape of small homes perched on rounded hills, forms that hold a quiet balance between comfort and mystery. Her work invites viewers into intimate, imagined terrains where domesticity, myth, and panorama gently blur.</p>
   </div>
 
   <!-- ── CONTACT FORM ─── -->
