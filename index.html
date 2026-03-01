@@ -22,7 +22,7 @@
       --contact-padding-bottom: 0px;
       --contact-bg:             #9ba1a6;
       --contact-max-width:      780px;
-      --contact-title-size:     60px;
+      --contact-title-size:     40px;
       --contact-input-size:     16px;
     }
     /* ===================================================== */
@@ -133,6 +133,8 @@
          independent of the desktop layout, safe to adjust here */
       .bio-overlay {
         display: block;
+        /* Raise by ~one mobile line of text (font ~4vw × 1.7 line-height ÷ image aspect) */
+        top: calc(var(--bio-top) - 2.6%);
         left: 7%;
         width: 86%;
         padding: 3vw 4vw;
@@ -441,7 +443,7 @@
       // Current values (must match :root defaults above)
       const v = {
         bioTop: 43.6, bioLeft: 21.4, bioWidth: 60, bioFont: 1.65,
-        ctOverlap: 31.5, ctTop: 0, ctBot: 0, ctWidth: 780, ctTitle: 60,
+        ctOverlap: 31.5, ctTop: 0, ctBot: 0, ctWidth: 780, ctTitle: 40,
       };
 
       function apply() {
