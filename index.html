@@ -144,6 +144,63 @@
       .contact-section { padding: 48px 20px 64px; }
     }
 
+    /* ══════════════════════════════════════════════════
+       LAYOUT EDITOR PANEL
+       ══════════════════════════════════════════════════ */
+    .ep-toggle {
+      position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+      background: #1e2d5e; color: #f5f0e8;
+      border: none; border-radius: 4px; padding: 10px 18px;
+      font-family: 'Lora', Georgia, serif; font-style: italic; font-size: 14px;
+      letter-spacing: 0.05em; cursor: pointer;
+      box-shadow: 0 2px 14px rgba(0,0,0,0.35); transition: background 0.2s;
+    }
+    .ep-toggle:hover { background: #253672; }
+    .ep-panel {
+      position: fixed; top: 0; right: 0; width: 288px; height: 100vh;
+      background: rgba(16, 17, 24, 0.96); backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px); color: #e0daea;
+      font-family: 'Lora', Georgia, serif; z-index: 9998;
+      overflow-y: auto; transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: -6px 0 32px rgba(0,0,0,0.45);
+    }
+    .ep-panel.open { transform: translateX(0); }
+    .ep-head {
+      position: sticky; top: 0; background: rgba(16, 17, 24, 0.98);
+      padding: 15px 18px; display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .ep-head-title { font-size: 11px; font-style: italic; letter-spacing: 0.12em; text-transform: uppercase; color: #8880a8; }
+    .ep-close-btn {
+      background: none; border: none; color: #8880a8; font-size: 16px;
+      cursor: pointer; padding: 2px 6px; line-height: 1;
+      border-radius: 3px; transition: color 0.15s, background 0.15s;
+    }
+    .ep-close-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+    .ep-section { padding: 18px 18px 4px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .ep-section-title { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #8880a8; margin-bottom: 4px; }
+    .ep-hint { font-size: 11px; font-style: italic; color: #504870; margin-bottom: 16px; line-height: 1.5; }
+    .ep-row { margin-bottom: 16px; }
+    .ep-row-label { display: flex; justify-content: space-between; align-items: baseline; font-size: 12px; color: #b8b0cc; margin-bottom: 5px; }
+    .ep-row-label .ep-val { font-size: 11px; font-style: italic; color: #9890b8; min-width: 52px; text-align: right; }
+    .ep-row input[type="range"] { width: 100%; height: 4px; accent-color: #6070c8; cursor: pointer; }
+    .ep-copy-btn {
+      display: block; width: calc(100% - 36px); margin: 20px 18px 0;
+      background: #1e2d5e; color: #f5f0e8; border: none; border-radius: 3px; padding: 11px;
+      font-family: 'Lora', Georgia, serif; font-style: italic; font-size: 14px;
+      letter-spacing: 0.04em; cursor: pointer; transition: background 0.2s;
+    }
+    .ep-copy-btn:hover { background: #253672; }
+    .ep-output {
+      display: none; width: calc(100% - 36px); margin: 12px 18px 0;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 3px; padding: 11px; font-family: 'Courier New', monospace;
+      font-size: 11px; color: #98e8a8; line-height: 1.7; resize: none; height: 210px;
+    }
+    .ep-msg { display: none; text-align: center; font-size: 11px; font-style: italic; color: #98e8a8; margin: 10px 18px 20px; line-height: 1.5; }
+    .bio-overlay.editable { cursor: grab; outline: 2px dashed rgba(110,140,230,0.75); outline-offset: 6px; border-radius: 2px; user-select: none; }
+    .bio-overlay.editable:active { cursor: grabbing; }
   </style>
 </head>
 <body>
@@ -156,13 +213,13 @@
       class="site-image"
     >
     <div class="bio-overlay" id="bio-overlay">
-      <p class="bio-text">Teresa is a ceramic artist whose practice moves between tenderness and the uncanny. Working with clay, she creates surreal, mythical pieces that feel both ancient and playful, offering an inversion of the Australian psyche where present times become dreamlike and otherworldly.<span class="bio-extended"> Alongside these creatures, she builds a landscape of small homes perched on rounded hills, forms that hold a quiet balance between comfort and mystery. Her work invites viewers into intimate, imagined terrains where domesticity, myth, and panorama gently blur.</span></p>
+      <p class="bio-text">Teresa is a ceramic artist whose practice moves between tenderness and the uncanny. Working with clay, she creates surreal, mythical pieces that feel both ancient and playful, offering an inversion of the Australian psyche where present times become dreamlike and otherworldly.<span class="bio-extended"> Her work invites viewers into intimate, imagined terrains where domesticity, myth, and panorama gently blur.</span></p>
     </div>
   </div>
 
   <!-- Bio for mobile (below image) -->
   <div class="bio-mobile">
-    <p class="bio-text">Teresa is a ceramic artist whose practice moves between tenderness and the uncanny. Working with clay, she creates surreal, mythical pieces that feel both ancient and playful, offering an inversion of the Australian psyche where present times become dreamlike and otherworldly.<span class="bio-extended"> Alongside these creatures, she builds a landscape of small homes perched on rounded hills, forms that hold a quiet balance between comfort and mystery. Her work invites viewers into intimate, imagined terrains where domesticity, myth, and panorama gently blur.</span></p>
+    <p class="bio-text">Teresa is a ceramic artist whose practice moves between tenderness and the uncanny. Working with clay, she creates surreal, mythical pieces that feel both ancient and playful, offering an inversion of the Australian psyche where present times become dreamlike and otherworldly.<span class="bio-extended"> Her work invites viewers into intimate, imagined terrains where domesticity, myth, and panorama gently blur.</span></p>
   </div>
 
   <!-- ── CONTACT FORM ─── -->
@@ -194,6 +251,61 @@
     </div>
   </section>
 
+  <button class="ep-toggle" id="ep-toggle">✏ edit layout</button>
+
+  <aside class="ep-panel" id="ep-panel" aria-label="Layout editor">
+    <div class="ep-head">
+      <span class="ep-head-title">Layout editor</span>
+      <button class="ep-close-btn" id="ep-close-btn" aria-label="Close editor">✕</button>
+    </div>
+    <div class="ep-section">
+      <div class="ep-section-title">Bio text</div>
+      <p class="ep-hint">Drag the text to move it, or use the sliders</p>
+      <div class="ep-row">
+        <div class="ep-row-label">Up / down <span class="ep-val" id="v-bio-top">43.6%</span></div>
+        <input type="range" id="ep-bio-top" min="25" max="65" step="0.1" value="43.6">
+      </div>
+      <div class="ep-row">
+        <div class="ep-row-label">Left / right <span class="ep-val" id="v-bio-left">21.4%</span></div>
+        <input type="range" id="ep-bio-left" min="0" max="55" step="0.1" value="21.4">
+      </div>
+      <div class="ep-row">
+        <div class="ep-row-label">Width <span class="ep-val" id="v-bio-width">60%</span></div>
+        <input type="range" id="ep-bio-width" min="20" max="95" step="1" value="60">
+      </div>
+      <div class="ep-row">
+        <div class="ep-row-label">Text size <span class="ep-val" id="v-bio-font">1.65vw</span></div>
+        <input type="range" id="ep-bio-font" min="0.4" max="2.5" step="0.05" value="1.65">
+      </div>
+    </div>
+    <div class="ep-section">
+      <div class="ep-section-title">Contact form</div>
+      <div class="ep-row">
+        <div class="ep-row-label">Move up into image <span class="ep-val" id="v-ct-overlap">49vw</span></div>
+        <input type="range" id="ep-ct-overlap" min="0" max="75" step="0.5" value="49">
+      </div>
+      <div class="ep-row">
+        <div class="ep-row-label">Space above <span class="ep-val" id="v-ct-top">36px</span></div>
+        <input type="range" id="ep-ct-top" min="0" max="200" step="4" value="36">
+      </div>
+      <div class="ep-row">
+        <div class="ep-row-label">Space below <span class="ep-val" id="v-ct-bot">200px</span></div>
+        <input type="range" id="ep-ct-bot" min="0" max="400" step="4" value="200">
+      </div>
+      <div class="ep-row">
+        <div class="ep-row-label">Form width <span class="ep-val" id="v-ct-width">900px</span></div>
+        <input type="range" id="ep-ct-width" min="300" max="1200" step="10" value="900">
+      </div>
+      <div class="ep-row">
+        <div class="ep-row-label">Title size <span class="ep-val" id="v-ct-title">43px</span></div>
+        <input type="range" id="ep-ct-title" min="14" max="80" step="1" value="43">
+      </div>
+    </div>
+    <button class="ep-copy-btn" id="ep-copy-btn">Copy settings to lock in</button>
+    <p class="ep-msg" id="ep-msg"></p>
+    <textarea class="ep-output" id="ep-output" readonly spellcheck="false"></textarea>
+  </aside>
+
   <script>
     const form   = document.getElementById('contact-form');
     const status = document.getElementById('form-status');
@@ -215,6 +327,113 @@
         status.textContent = 'Could not send. Please check your connection.';
       }
     });
+
+    // ── Layout editor ──────────────────────────────────────────
+    (function () {
+      const root    = document.documentElement;
+      const overlay = document.getElementById('bio-overlay');
+      const wrapper = document.querySelector('.image-wrapper');
+      const panel   = document.getElementById('ep-panel');
+      const toggle  = document.getElementById('ep-toggle');
+
+      const v = {
+        bioTop: 43.6, bioLeft: 21.4, bioWidth: 60, bioFont: 1.65,
+        ctOverlap: 49, ctTop: 36, ctBot: 200, ctWidth: 900, ctTitle: 43,
+      };
+
+      function apply() {
+        root.style.setProperty('--bio-top',                v.bioTop .toFixed(1) + '%');
+        root.style.setProperty('--bio-left',               v.bioLeft.toFixed(1) + '%');
+        root.style.setProperty('--bio-width',              v.bioWidth + '%');
+        root.style.setProperty('--bio-font-size',          v.bioFont.toFixed(2) + 'vw');
+        root.style.setProperty('--contact-overlap',        v.ctOverlap + 'vw');
+        root.style.setProperty('--contact-padding-top',    v.ctTop  + 'px');
+        root.style.setProperty('--contact-padding-bottom', v.ctBot  + 'px');
+        root.style.setProperty('--contact-max-width',      v.ctWidth + 'px');
+        root.style.setProperty('--contact-title-size',     v.ctTitle + 'px');
+      }
+
+      function sync() {
+        document.getElementById('v-bio-top'   ).textContent = v.bioTop .toFixed(1) + '%';
+        document.getElementById('v-bio-left'  ).textContent = v.bioLeft.toFixed(1) + '%';
+        document.getElementById('v-bio-width' ).textContent = v.bioWidth + '%';
+        document.getElementById('v-bio-font'  ).textContent = v.bioFont.toFixed(2) + 'vw';
+        document.getElementById('v-ct-overlap').textContent = v.ctOverlap + 'vw';
+        document.getElementById('v-ct-top'    ).textContent = v.ctTop   + 'px';
+        document.getElementById('v-ct-bot'    ).textContent = v.ctBot   + 'px';
+        document.getElementById('v-ct-width'  ).textContent = v.ctWidth + 'px';
+        document.getElementById('v-ct-title'  ).textContent = v.ctTitle + 'px';
+        document.getElementById('ep-bio-top'  ).value = v.bioTop;
+        document.getElementById('ep-bio-left' ).value = v.bioLeft;
+        document.getElementById('ep-ct-overlap').value = v.ctOverlap;
+      }
+
+      function open()  { panel.classList.add('open'); overlay.classList.add('editable'); toggle.textContent = '✕ close editor'; }
+      function close() { panel.classList.remove('open'); overlay.classList.remove('editable'); toggle.textContent = '✏ edit layout'; dragging = false; }
+      toggle.addEventListener('click', () => panel.classList.contains('open') ? close() : open());
+      document.getElementById('ep-close-btn').addEventListener('click', close);
+
+      [
+        ['ep-bio-top',    'bioTop'   ],
+        ['ep-bio-left',   'bioLeft'  ],
+        ['ep-bio-width',  'bioWidth' ],
+        ['ep-bio-font',   'bioFont'  ],
+        ['ep-ct-overlap', 'ctOverlap'],
+        ['ep-ct-top',     'ctTop'    ],
+        ['ep-ct-bot',     'ctBot'    ],
+        ['ep-ct-width',   'ctWidth'  ],
+        ['ep-ct-title',   'ctTitle'  ],
+      ].forEach(([id, key]) => {
+        document.getElementById(id).addEventListener('input', function () {
+          v[key] = parseFloat(this.value); apply(); sync();
+        });
+      });
+
+      let dragging = false, ox = 0, oy = 0;
+      function dragStart(cx, cy) {
+        if (!panel.classList.contains('open')) return;
+        dragging = true;
+        const r = overlay.getBoundingClientRect();
+        ox = cx - r.left; oy = cy - r.top;
+      }
+      function dragMove(cx, cy) {
+        if (!dragging) return;
+        const wr = wrapper.getBoundingClientRect();
+        v.bioLeft = Math.max(0, Math.min(85, ((cx - wr.left - ox) / wr.width ) * 100));
+        v.bioTop  = Math.max(0, Math.min(95, ((cy - wr.top  - oy) / wr.height) * 100));
+        apply(); sync();
+      }
+      overlay.addEventListener('mousedown', e => { dragStart(e.clientX, e.clientY); e.preventDefault(); });
+      document.addEventListener('mousemove', e => dragMove(e.clientX, e.clientY));
+      document.addEventListener('mouseup',   ()  => { dragging = false; });
+      overlay.addEventListener('touchstart', e => { dragStart(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); }, { passive: false });
+      document.addEventListener('touchmove', e => { if (!dragging) return; dragMove(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); }, { passive: false });
+      document.addEventListener('touchend', () => { dragging = false; });
+
+      document.getElementById('ep-copy-btn').addEventListener('click', () => {
+        const lines = [
+          `--bio-top:                ${v.bioTop .toFixed(1)}%;`,
+          `--bio-left:               ${v.bioLeft.toFixed(1)}%;`,
+          `--bio-width:              ${v.bioWidth}%;`,
+          `--bio-font-size:          ${v.bioFont.toFixed(2)}vw;`,
+          `--contact-overlap:        ${v.ctOverlap}vw;`,
+          `--contact-padding-top:    ${v.ctTop}px;`,
+          `--contact-padding-bottom: ${v.ctBot}px;`,
+          `--contact-max-width:      ${v.ctWidth}px;`,
+          `--contact-title-size:     ${v.ctTitle}px;`,
+        ].join('\n');
+        const out = document.getElementById('ep-output');
+        const msg = document.getElementById('ep-msg');
+        out.value = lines; out.style.display = 'block';
+        out.select(); out.setSelectionRange(0, 99999);
+        const copied = () => { msg.style.display = 'block'; msg.textContent = '✓ Copied! Paste these values to Craig to lock them in.'; };
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(lines).then(copied).catch(() => { document.execCommand('copy'); copied(); });
+        } else { document.execCommand('copy'); copied(); }
+      });
+
+      sync();
+    })();
   </script>
 
 </body>
