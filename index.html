@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teresa Smith — The Little House Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    /* =====================================================
+       LOCKED-IN VALUES — edited via the layout editor
+       ===================================================== */
+    :root {
+      --bio-top:                43.6%;
+      --bio-left:               21.4%;
+      --bio-width:              60%;
+      --bio-font-size:          1.65vw;
+      --bio-color:              #1e2d5e;
+      --contact-overlap:        31.5vw;
+      --contact-padding-top:    0px;
+      --contact-padding-bottom: 0px;
+      --contact-bg:             #9ba1a6;
+      --contact-max-width:      780px;
+      --contact-title-size:     60px;
+      --contact-input-size:     16px;
+    }
+    /* ===================================================== */
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--contact-bg);
+      font-family: 'Lora', Georgia, serif;
+      overflow-x: hidden;
+    }
+
+    /* ── IMAGE + OVERLAY ─── */
+    .image-wrapper { position: relative; width: 100%; line-height: 0; }
+
+    .site-image { width: 100%; height: auto; display: block; }
+
+    .bio-overlay {
+      position: absolute;
+      top:   var(--bio-top);
+      left:  var(--bio-left);
+      width: var(--bio-width);
+      padding: 1.5% 3%;
+    }
+
+    .bio-text {
+      font-family: 'Lora', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: var(--bio-font-size);
+      line-height: 1.8;
+      color: var(--bio-color);
+    }
+
+    /* edit-mode indicator on the overlay */
+    .bio-overlay.editable {
+      cursor: grab;
+      outline: 2px dashed rgba(110, 140, 230, 0.75);
+      outline-offset: 6px;
+      border-radius: 2px;
+      user-select: none;
+    }
+    .bio-overlay.editable:active { cursor: grabbing; }
+
+    /* Mobile: hide overlay, show text block below image */
+    .bio-mobile {
+      display: none;
+      background: #f5f0e8;
+      padding: 40px 28px 44px;
+      border-bottom: 3px solid #ddd5c4;
+    }
+    .bio-mobile .bio-text { font-size: 17px; line-height: 1.9; max-width: 620px; margin: 0 auto; }
+
+    /* ── CONTACT SECTION ─── */
+    .contact-section {
+      background-color: var(--contact-bg);
+      padding: var(--contact-padding-top) 24px var(--contact-padding-bottom);
+      /* Negative margin pulls the section up into the image's gray area */
+      margin-top: calc(-1 * var(--contact-overlap));
+      position: relative;
+      z-index: 1;
+    }
+    .contact-inner { max-width: var(--contact-max-width); margin: 0 auto; }
+    .contact-title {
+      font-family: 'Lora', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: var(--contact-title-size);
+      color: #f5f0e8;
+      text-align: center;
+      margin-bottom: 40px;
+      letter-spacing: 0.01em;
+    }
+    .contact-form { display: flex; flex-direction: column; gap: 22px; }
+    .form-group { display: flex; flex-direction: column; gap: 7px; }
+    .form-label {
+      font-size: 12px; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase; color: #ddd5c4;
+    }
+    .form-input, .form-textarea {
+      width: 100%; background: rgba(255,255,255,0.13);
+      border: 1px solid rgba(245,240,232,0.3); border-radius: 2px;
+      padding: 13px 16px; font-family: 'Lora', Georgia, serif;
+      font-size: var(--contact-input-size); color: #f5f0e8;
+      transition: border-color 0.2s, background 0.2s; -webkit-appearance: none;
+    }
+    .form-input::placeholder, .form-textarea::placeholder { color: rgba(245,240,232,0.38); }
+    .form-input:focus, .form-textarea:focus {
+      outline: none; border-color: rgba(245,240,232,0.65); background: rgba(255,255,255,0.2);
+    }
+    .form-textarea { min-height: 148px; resize: vertical; line-height: 1.7; }
+    .submit-btn {
+      align-self: flex-start; margin-top: 4px;
+      background: #1e2d5e; color: #f5f0e8;
+      border: none; border-radius: 2px; padding: 14px 40px;
+      font-family: 'Lora', Georgia, serif; font-style: italic; font-size: 16px;
+      letter-spacing: 0.04em; cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .submit-btn:hover { background: #253672; }
+    .submit-btn:active { transform: scale(0.98); }
+    .form-status { display: none; margin-top: 16px; font-style: italic; font-size: 15px; color: #ddd5c4; }
+
+    /* ── RESPONSIVE ─── */
+    @media (max-width: 700px) {
+      .bio-overlay { display: none; }
+      .bio-mobile  { display: block; }
+    }
+    @media (max-width: 480px) {
+      .contact-section { padding: 48px 20px 64px; }
+    }
+
+    /* ══════════════════════════════════════════════════
+       LAYOUT EDITOR PANEL
+       ══════════════════════════════════════════════════ */
+
+    /* Toggle button — always visible, bottom-right */
+    .ep-toggle {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      z-index: 9999;
+      background: #1e2d5e;
+      color: #f5f0e8;
+      border: none; border-radius: 4px;
+      padding: 10px 18px;
+      font-family: 'Lora', Georgia, serif;
+      font-style: italic; font-size: 14px;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      box-shadow: 0 2px 14px rgba(0,0,0,0.35);
+      transition: background 0.2s;
+    }
+    .ep-toggle:hover { background: #253672; }
+
+    /* Panel */
+    .ep-panel {
+      position: fixed;
+      top: 0; right: 0;
+      width: 288px; height: 100vh;
+      background: rgba(16, 17, 24, 0.96);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #e0daea;
+      font-family: 'Lora', Georgia, serif;
+      z-index: 9998;
+      overflow-y: auto;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: -6px 0 32px rgba(0,0,0,0.45);
+    }
+    .ep-panel.open { transform: translateX(0); }
+
+    /* Sticky header */
+    .ep-head {
+      position: sticky; top: 0;
+      background: rgba(16, 17, 24, 0.98);
+      padding: 15px 18px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .ep-head-title {
+      font-size: 11px; font-style: italic;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: #8880a8;
+    }
+    .ep-close-btn {
+      background: none; border: none;
+      color: #8880a8; font-size: 16px;
+      cursor: pointer; padding: 2px 6px; line-height: 1;
+      border-radius: 3px; transition: color 0.15s, background 0.15s;
+    }
+    .ep-close-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+    /* Sections */
+    .ep-section {
+      padding: 18px 18px 4px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .ep-section-title {
+      font-size: 10px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #8880a8;
+      margin-bottom: 4px;
+    }
+    .ep-hint {
+      font-size: 11px; font-style: italic;
+      color: #504870; margin-bottom: 16px; line-height: 1.5;
+    }
+
+    /* Individual slider rows */
+    .ep-row { margin-bottom: 16px; }
+    .ep-row-label {
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-size: 12px; color: #b8b0cc; margin-bottom: 5px;
+    }
+    .ep-row-label .ep-val {
+      font-size: 11px; font-style: italic;
+      color: #9890b8; min-width: 52px; text-align: right;
+    }
+    .ep-row input[type="range"] {
+      width: 100%; height: 4px;
+      accent-color: #6070c8;
+      cursor: pointer;
+    }
+
+    /* Copy button */
+    .ep-copy-btn {
+      display: block;
+      width: calc(100% - 36px);
+      margin: 20px 18px 0;
+      background: #1e2d5e; color: #f5f0e8;
+      border: none; border-radius: 3px; padding: 11px;
+      font-family: 'Lora', Georgia, serif;
+      font-style: italic; font-size: 14px;
+      letter-spacing: 0.04em; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .ep-copy-btn:hover { background: #253672; }
+
+    /* Output textarea */
+    .ep-output {
+      display: none;
+      width: calc(100% - 36px);
+      margin: 12px 18px 0;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 3px;
+      padding: 11px;
+      font-family: 'Courier New', monospace; font-size: 11px;
+      color: #98e8a8; line-height: 1.7;
+      resize: none; height: 210px;
+    }
+
+    .ep-msg {
+      display: none;
+      text-align: center; font-size: 11px;
+      font-style: italic; color: #98e8a8;
+      margin: 10px 18px 20px; line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── MAIN IMAGE + OVERLAY ─── -->
+  <div class="image-wrapper">
+    <img
+      src="TeresaWebsite.png"
+      alt="Teresa Smith — The Little House Studio, ceramic artist"
+      class="site-image"
+    >
+    <div class="bio-overlay" id="bio-overlay">
+      <p class="bio-text">Teresa is a ceramic artist whose practice moves between tenderness and the uncanny. Working with clay, she creates surreal, mythical beasts that feel both ancient and playful, offering an inversion of the Australian psyche where present times becomes dreamlike and otherworldly. Alongside these creatures, she builds a landscape of small homes perched on rounded hills, forms that hold a quiet balance between comfort and mystery. Her work invites viewers into intimate, imagined terrains where domesticity, myth, and panorama gently blur.</p>
+    </div>
+  </div>
+
+  <!-- Bio for mobile (below image) -->
+  <div class="bio-mobile">
+    <p class="bio-text">Teresa is a ceramic artist whose practice moves between tenderness and the uncanny. Working with clay, she creates surreal, mythical beasts that feel both ancient and playful, offering an inversion of the Australian psyche where present times becomes dreamlike and otherworldly. Alongside these creatures, she builds a landscape of small homes perched on rounded hills, forms that hold a quiet balance between comfort and mystery. Her work invites viewers into intimate, imagined terrains where domesticity, myth, and panorama gently blur.</p>
+  </div>
+
+  <!-- ── CONTACT FORM ─── -->
+  <section class="contact-section" id="contact">
+    <div class="contact-inner">
+      <h2 class="contact-title">Get in touch</h2>
+      <!--
+        Formspree setup:
+        1. Go to https://formspree.io — create a free account
+        2. Create a form pointed at teresasmith@y7mail.com
+        3. Replace YOUR_FORM_ID with the ID they give you
+      -->
+      <form class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" id="contact-form">
+        <div class="form-group">
+          <label class="form-label" for="name">Name</label>
+          <input class="form-input" type="text" id="name" name="name" placeholder="Your name" required autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="email">Email</label>
+          <input class="form-input" type="email" id="email" name="email" placeholder="your@email.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="message">Message</label>
+          <textarea class="form-textarea" id="message" name="message" placeholder="Say hello, ask about a piece, or just share what caught your eye…" required></textarea>
+        </div>
+        <button class="submit-btn" type="submit">Send message</button>
+        <p class="form-status" id="form-status"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       LAYOUT EDITOR
+       (remove this section + the script below
+        when you've locked in your settings)
+       ══════════════════════════════════════════ -->
+
+  <button class="ep-toggle" id="ep-toggle">✏ edit layout</button>
+
+  <aside class="ep-panel" id="ep-panel" aria-label="Layout editor">
+
+    <div class="ep-head">
+      <span class="ep-head-title">Layout editor</span>
+      <button class="ep-close-btn" id="ep-close-btn" aria-label="Close editor">✕</button>
+    </div>
+
+    <!-- Bio text controls -->
+    <div class="ep-section">
+      <div class="ep-section-title">Bio text</div>
+      <p class="ep-hint">Drag the text to move it, or use the sliders</p>
+
+      <div class="ep-row">
+        <div class="ep-row-label">Up / down <span class="ep-val" id="v-bio-top">39.5%</span></div>
+        <input type="range" id="ep-bio-top" min="25" max="65" step="0.1" value="39.5">
+      </div>
+
+      <div class="ep-row">
+        <div class="ep-row-label">Left / right <span class="ep-val" id="v-bio-left">20.0%</span></div>
+        <input type="range" id="ep-bio-left" min="0" max="55" step="0.1" value="20">
+      </div>
+
+      <div class="ep-row">
+        <div class="ep-row-label">Width <span class="ep-val" id="v-bio-width">60%</span></div>
+        <input type="range" id="ep-bio-width" min="20" max="95" step="1" value="60">
+      </div>
+
+      <div class="ep-row">
+        <div class="ep-row-label">Text size <span class="ep-val" id="v-bio-font">1.05vw</span></div>
+        <input type="range" id="ep-bio-font" min="0.4" max="2.5" step="0.05" value="1.05">
+      </div>
+    </div>
+
+    <!-- Contact form controls -->
+    <div class="ep-section">
+      <div class="ep-section-title">Contact form</div>
+
+      <div class="ep-row">
+        <div class="ep-row-label">Move up into image <span class="ep-val" id="v-ct-overlap">0vw</span></div>
+        <input type="range" id="ep-ct-overlap" min="0" max="35" step="0.5" value="31.5">
+      </div>
+
+      <div class="ep-row">
+        <div class="ep-row-label">Space above <span class="ep-val" id="v-ct-top">0px</span></div>
+        <input type="range" id="ep-ct-top" min="0" max="200" step="4" value="0">
+      </div>
+
+      <div class="ep-row">
+        <div class="ep-row-label">Space below <span class="ep-val" id="v-ct-bot">80px</span></div>
+        <input type="range" id="ep-ct-bot" min="0" max="200" step="4" value="80">
+      </div>
+
+      <div class="ep-row">
+        <div class="ep-row-label">Form width <span class="ep-val" id="v-ct-width">560px</span></div>
+        <input type="range" id="ep-ct-width" min="300" max="900" step="10" value="560">
+      </div>
+
+      <div class="ep-row">
+        <div class="ep-row-label">Title size <span class="ep-val" id="v-ct-title">30px</span></div>
+        <input type="range" id="ep-ct-title" min="14" max="60" step="1" value="30">
+      </div>
+    </div>
+
+    <button class="ep-copy-btn" id="ep-copy-btn">Copy settings to lock in</button>
+    <p class="ep-msg" id="ep-msg"></p>
+    <textarea class="ep-output" id="ep-output" readonly spellcheck="false"></textarea>
+
+  </aside>
+
+  <!-- ══════════════════════════════════════════ -->
+
+  <script>
+    // ── Contact form AJAX submit ───────────────────────────────
+    const form   = document.getElementById('contact-form');
+    const status = document.getElementById('form-status');
+    form.addEventListener('submit', async function (e) {
+      if (form.action.includes('YOUR_FORM_ID')) return;
+      e.preventDefault();
+      try {
+        const r = await fetch(form.action, {
+          method: 'POST', body: new FormData(form),
+          headers: { Accept: 'application/json' },
+        });
+        status.style.display = 'block';
+        status.textContent = r.ok
+          ? 'Thank you — Teresa will be in touch soon.'
+          : 'Something went wrong. Please try again.';
+        if (r.ok) form.reset();
+      } catch {
+        status.style.display = 'block';
+        status.textContent = 'Could not send. Please check your connection.';
+      }
+    });
+
+    // ── Layout editor ──────────────────────────────────────────
+    (function () {
+      const root    = document.documentElement;
+      const overlay = document.getElementById('bio-overlay');
+      const wrapper = document.querySelector('.image-wrapper');
+      const panel   = document.getElementById('ep-panel');
+      const toggle  = document.getElementById('ep-toggle');
+
+      // Current values (must match :root defaults above)
+      const v = {
+        bioTop: 43.6, bioLeft: 21.4, bioWidth: 60, bioFont: 1.65,
+        ctOverlap: 31.5, ctTop: 0, ctBot: 0, ctWidth: 780, ctTitle: 60,
+      };
+
+      function apply() {
+        root.style.setProperty('--bio-top',               v.bioTop .toFixed(1) + '%');
+        root.style.setProperty('--bio-left',              v.bioLeft.toFixed(1) + '%');
+        root.style.setProperty('--bio-width',             v.bioWidth + '%');
+        root.style.setProperty('--bio-font-size',         v.bioFont.toFixed(2) + 'vw');
+        root.style.setProperty('--contact-overlap',        v.ctOverlap + 'vw');
+        root.style.setProperty('--contact-padding-top',   v.ctTop  + 'px');
+        root.style.setProperty('--contact-padding-bottom',v.ctBot  + 'px');
+        root.style.setProperty('--contact-max-width',     v.ctWidth + 'px');
+        root.style.setProperty('--contact-title-size',    v.ctTitle + 'px');
+      }
+
+      function sync() {
+        document.getElementById('v-bio-top'  ).textContent = v.bioTop .toFixed(1) + '%';
+        document.getElementById('v-bio-left' ).textContent = v.bioLeft.toFixed(1) + '%';
+        document.getElementById('v-bio-width').textContent = v.bioWidth + '%';
+        document.getElementById('v-bio-font' ).textContent = v.bioFont.toFixed(2) + 'vw';
+        document.getElementById('v-ct-overlap').textContent = v.ctOverlap + 'vw';
+        document.getElementById('v-ct-top'   ).textContent = v.ctTop   + 'px';
+        document.getElementById('v-ct-bot'   ).textContent = v.ctBot   + 'px';
+        document.getElementById('v-ct-width' ).textContent = v.ctWidth + 'px';
+        document.getElementById('v-ct-title' ).textContent = v.ctTitle + 'px';
+        // Keep sliders in sync when drag updates top/left
+        document.getElementById('ep-bio-top'    ).value = v.bioTop;
+        document.getElementById('ep-bio-left'   ).value = v.bioLeft;
+        document.getElementById('ep-ct-overlap' ).value = v.ctOverlap;
+      }
+
+      // Panel open / close
+      function open()  { panel.classList.add('open'); overlay.classList.add('editable'); toggle.textContent = '✕ close editor'; }
+      function close() { panel.classList.remove('open'); overlay.classList.remove('editable'); toggle.textContent = '✏ edit layout'; dragging = false; }
+      toggle.addEventListener('click', () => panel.classList.contains('open') ? close() : open());
+      document.getElementById('ep-close-btn').addEventListener('click', close);
+
+      // Sliders
+      [
+        ['ep-bio-top',     'bioTop'    ],
+        ['ep-bio-left',    'bioLeft'   ],
+        ['ep-bio-width',   'bioWidth'  ],
+        ['ep-bio-font',    'bioFont'   ],
+        ['ep-ct-overlap',  'ctOverlap' ],
+        ['ep-ct-top',      'ctTop'     ],
+        ['ep-ct-bot',      'ctBot'     ],
+        ['ep-ct-width',    'ctWidth'   ],
+        ['ep-ct-title',    'ctTitle'   ],
+      ].forEach(([id, key]) => {
+        document.getElementById(id).addEventListener('input', function () {
+          v[key] = parseFloat(this.value);
+          apply(); sync();
+        });
+      });
+
+      // Drag
+      let dragging = false, ox = 0, oy = 0;
+
+      function dragStart(cx, cy) {
+        if (!panel.classList.contains('open')) return;
+        dragging = true;
+        const r = overlay.getBoundingClientRect();
+        ox = cx - r.left; oy = cy - r.top;
+      }
+      function dragMove(cx, cy) {
+        if (!dragging) return;
+        const wr = wrapper.getBoundingClientRect();
+        v.bioLeft = Math.max(0, Math.min(85, ((cx - wr.left - ox) / wr.width ) * 100));
+        v.bioTop  = Math.max(0, Math.min(95, ((cy - wr.top  - oy) / wr.height) * 100));
+        apply(); sync();
+      }
+
+      overlay.addEventListener('mousedown', e => { dragStart(e.clientX, e.clientY); e.preventDefault(); });
+      document.addEventListener('mousemove', e => dragMove(e.clientX, e.clientY));
+      document.addEventListener('mouseup',   ()  => { dragging = false; });
+
+      overlay.addEventListener('touchstart', e => {
+        dragStart(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault();
+      }, { passive: false });
+      document.addEventListener('touchmove', e => {
+        if (!dragging) return;
+        dragMove(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault();
+      }, { passive: false });
+      document.addEventListener('touchend', () => { dragging = false; });
+
+      // Copy / show settings
+      document.getElementById('ep-copy-btn').addEventListener('click', () => {
+        const lines = [
+          `--bio-top:                ${v.bioTop .toFixed(1)}%;`,
+          `--bio-left:               ${v.bioLeft.toFixed(1)}%;`,
+          `--bio-width:              ${v.bioWidth}%;`,
+          `--bio-font-size:          ${v.bioFont.toFixed(2)}vw;`,
+          `--contact-overlap:        ${v.ctOverlap}vw;`,
+          `--contact-padding-top:    ${v.ctTop}px;`,
+          `--contact-padding-bottom: ${v.ctBot}px;`,
+          `--contact-max-width:      ${v.ctWidth}px;`,
+          `--contact-title-size:     ${v.ctTitle}px;`,
+        ].join('\n');
+
+        const out = document.getElementById('ep-output');
+        const msg = document.getElementById('ep-msg');
+        out.value = lines;
+        out.style.display = 'block';
+        out.select(); out.setSelectionRange(0, 99999);
+
+        const copied = () => {
+          msg.style.display = 'block';
+          msg.textContent = '✓ Copied! Paste these values to Craig to lock them in.';
+        };
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(lines).then(copied).catch(() => {
+            document.execCommand('copy');
+            msg.style.display = 'block';
+            msg.textContent = 'Select all the text above, copy it (⌘A then ⌘C), and paste to Craig.';
+          });
+        } else {
+          document.execCommand('copy');
+          copied();
+        }
+      });
+
+      sync();
+    })();
+  </script>
+
+</body>
+</html>
