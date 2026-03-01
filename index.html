@@ -17,12 +17,12 @@
       --bio-width:              60%;
       --bio-font-size:          1.65vw;
       --bio-color:              #1e2d5e;
-      --contact-overlap:        55vw;
-      --contact-padding-top:    0px;
-      --contact-padding-bottom: 0px;
+      --contact-overlap:        49vw;
+      --contact-padding-top:    36px;
+      --contact-padding-bottom: 200px;
       --contact-bg:             #9ba1a6;
-      --contact-max-width:      780px;
-      --contact-title-size:     40px;
+      --contact-max-width:      900px;
+      --contact-title-size:     43px;
       --contact-input-size:     16px;
     }
     /* ===================================================== */
@@ -377,7 +377,7 @@
 
       <div class="ep-row">
         <div class="ep-row-label">Move up into image <span class="ep-val" id="v-ct-overlap">0vw</span></div>
-        <input type="range" id="ep-ct-overlap" min="0" max="75" step="0.5" value="55">
+        <input type="range" id="ep-ct-overlap" min="0" max="75" step="0.5" value="49">
       </div>
 
       <div class="ep-row">
@@ -443,7 +443,7 @@
       // Current values (must match :root defaults above)
       const v = {
         bioTop: 43.6, bioLeft: 21.4, bioWidth: 60, bioFont: 1.65,
-        ctOverlap: 55, ctTop: 0, ctBot: 0, ctWidth: 780, ctTitle: 40,
+        ctOverlap: 49, ctTop: 36, ctBot: 200, ctWidth: 900, ctTitle: 43,
       };
 
       function apply() {
